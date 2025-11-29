@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luke Combs - My Kinda Saturday Night M&G Booking</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind and Glassmorphism Styles -->
+    <style>
+        @import url('https://fonts.fonts.fonts.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0d; /* Dark background for concert feel */
+            color: #ffffff;
+            /* Added a subtle repeating background texture for depth */
+            background-image: radial-gradient(circle at center, #1c1c1c 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+
+        /* --- Glassmorphism Effect --- */
+        .glass-container {
+            /* Semi-transparent dark background */
+            background-color: rgba(26, 26, 26, 0.75); 
+            /* The core blur effect */
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            /* Light, subtle border */
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            /* Soft shadow for depth */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        /* Interactive elements (cards, buttons, inputs) for subtle lift/glow */
+        .glass-interactive {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-interactive:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(255, 99, 71, 0.25); /* Subtle red shadow on hover */
+        }
+
+        /* Style for form inputs to match glass aesthetic */
+        .glass-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.75rem; /* p-3 */
+            color: #ffffff;
+            width: 100%;
+        }
+        .glass-input:focus {
+            border-color: #ef4444; /* red-500 */
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="min-h-screen">
+        <!-- Header (Kept solid red for strong branding and top-of-page contrast) -->
+        <header class="bg-red-700/90 shadow-2xl sticky top-0 z-10">
+            <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+                <h1 class="text-3xl font-extrabold tracking-tight text-white uppercase">Luke Combs</h1>
+                <div class="flex items-center space-x-4">
+                    <!-- Fan View Button (Book Now) -->
+                    <button id="book-nav-btn" onclick="switchView('booking')" class="bg-white text-red-700 hover:bg-red-100 px-4 py-2 rounded-full font-bold transition duration-300 shadow-xl glass-interactive">
+                        Book Now
+                    </button>
+                    <!-- Admin View Button (Dashboard) - Visibility controlled by JS/Admin status -->
+                    <!-- THIS BUTTON will appear only if you are signed in as the admin -->
+                    <button id="dashboard-nav-btn" onclick="switchView('dashboard')" class="bg-yellow-400 text-gray-900 hover:bg-yellow-300 px-4 py-2 rounded-full font-bold transition duration-300 shadow-xl glass-interactive hidden">
+                        Dashboard
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+
+            <!-- ---------------------------------------------------------------------------------- -->
+            <!-- BOOKING VIEW (Public): Contains the Hero, Schedule, and Booking Form -->
+            <!-- ---------------------------------------------------------------------------------- -->
+            <div id="booking-view">
+                <!-- Hero/Poster Section - Split layout now uses Glassmorphism on the text side -->
+                <section class="mb-12 rounded-xl overflow-hidden shadow-2xl">
+                    <div class="md:flex">
+                        <!-- Text Content: Now uses the glass effect -->
+                        <div class="md:w-1/2 p-6 md:p-10 flex flex-col justify-center glass-container rounded-t-xl md:rounded-r-none md:rounded-l-xl">
+                            <span class="text-sm font-semibold uppercase tracking-widest text-yellow-400 mb-2">The 2025 - 2026 World Tour</span>
+                            <h2 class="text-5xl md:text-6xl font-black leading-tight mb-4 text-white">
+                                My Kinda Saturday Night
+                            </h2>
+                            <p class="text-xl text-gray-300 mb-6">Secure your exclusive Meet-and-Greet access for the remaining dates of the tour. Choose your experience, meet Luke, and pay seamlessly with Bitcoin.</p>
+                            <button onclick="document.getElementById('schedule-section').scrollIntoView({ behavior: 'smooth' })" class="w-full md:w-auto px-8 py-3 bg-red-600 text-white font-bold text-lg rounded-lg hover:bg-red-500 transition duration-300 shadow-xl glass-interactive">
+                                View Tour Schedule
+                            </button>
+                        </div>
+                        <!-- Image Content: Fill remaining space on MD+ -->
+                        <div class="md:w-1/2">
+                            <!-- Luke Combs Tour Poster Image -->
+                            <img src="https://news.virginia.edu/sites/default/files/Header-TMB-Luke-Combs-Contrib.jpg"
+                                 alt="Luke Combs - My Kinda Saturday Night Tour Official Poster"
+                                 class="w-full h-full object-cover md:rounded-r-xl rounded-b-xl md:rounded-bl-none"
+                                 style="min-height: 300px;" 
+                            >
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tour Schedule Section - Uses Glassmorphism container -->
+                <section id="schedule-section" class="mb-12 glass-container rounded-xl p-6 md:p-10 shadow-xl">
+                    <h3 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3 text-red-500">Remaining Tour Dates & Venues</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Individual date cards now use glass-container and interactive class -->
+                        <div class="p-4 glass-container glass-interactive rounded-lg shadow-md hover:bg-red-900/10">
+                            <p class="text-2xl font-bold text-yellow-400">July 11th, 2026</p>
+                            <p class="text-xl font-medium">Ziggo Dome</p>
+                            <p class="text-gray-300">Amsterdam, Netherlands</p>
+                        </div>
+                        <div class="p-4 glass-container glass-interactive rounded-lg shadow-md hover:bg-red-900/10">
+                            <p class="text-2xl font-bold text-yellow-400">July 15th, 2026</p>
+                            <p class="text-xl font-medium">The O2 Arena</p>
+                            <p class="text-gray-300">London, UK</p>
+                        </div>
+                        <div class="p-4 glass-container glass-interactive rounded-lg shadow-md hover:bg-red-900/10">
+                            <p class="text-2xl font-bold text-yellow-400">July 20th, 2026</p>
+                            <p class="text-xl font-medium">Accor Arena</p>
+                            <p class="text-gray-300">Paris, France</p>
+                        </div>
+                        <div class="p-4 glass-container glass-interactive rounded-lg shadow-md hover:bg-red-900/10">
+                            <p class="text-2xl font-bold text-yellow-400">July 25th, 2026</p>
+                            <p class="text-xl font-medium">Mercedes-Benz Arena</p>
+                            <p class="text-gray-300">Berlin, Germany</p>
+                        </div>
+                        <div class="p-4 glass-container glass-interactive rounded-lg shadow-md hover:bg-red-900/10">
+                            <p class="text-2xl font-bold text-yellow-400">July 30th, 2026</p>
+                            <p class="text-xl font-medium">Avicii Arena</p>
+                            <p class="text-gray-300">Stockholm, Sweden</p>
+                        </div>
+                        <!-- Add more dates as necessary, based on your fictional tour data -->
+                    </div>
+                </section>
+
+                <!-- Booking and Payment Section - Main Grid Container -->
+                <section id="booking-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                    <!-- Pricing Card List (Col 1) - Uses Glassmorphism container -->
+                    <div class="lg:col-span-1 glass-container rounded-xl p-6 shadow-xl">
+                        <h3 class="text-3xl font-bold mb-6 text-red-500">M&G Pricing & Packages</h3>
+                        <div id="pricing-list" class="space-y-4">
+                            <!-- Pricing options are injected here by JS for consistency -->
+                        </div>
+                    </div>
+
+                    <!-- Booking Form (Col 2) - Uses Glassmorphism container -->
+                    <div class="lg:col-span-2 glass-container rounded-xl p-6 shadow-xl">
+                        <h3 class="text-3xl font-bold mb-6 text-red-500">Secure Your Spot</h3>
+                        <form id="bookingForm" class="space-y-4">
+
+                            <!-- Step 1: Contact Info -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="fullName" class="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
+                                    <!-- Using custom glass-input class -->
+                                    <input type="text" id="fullName" required class="glass-input">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
+                                    <input type="email" id="email" required class="glass-input">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
+                                <input type="tel" id="phone" class="glass-input">
+                            </div>
+
+                            <!-- Step 2: Date & Package Selection -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="eventDate" class="block text-sm font-medium text-gray-300 mb-1">Select Event Date & Venue</label>
+                                    <!-- Select elements also use glass-input -->
+                                    <select id="eventDate" required class="glass-input appearance-none">
+                                        <option value="" disabled selected>Choose a Date</option>
+                                        <option value="2026-07-11 - Amsterdam, NL">July 11th, 2026 - Amsterdam, NL (Ziggo Dome)</option>
+                                        <option value="2026-07-15 - London, UK">July 15th, 2026 - London, UK (The O2 Arena)</option>
+                                        <option value="2026-07-20 - Paris, FR">July 20th, 2026 - Paris, FR (Accor Arena)</option>
+                                        <option value="2026-07-25 - Berlin, DE">July 25th, 2026 - Berlin, DE (Mercedes-Benz Arena)</option>
+                                        <option value="2026-07-30 - Stockholm, SE">July 30th, 2026 - Stockholm, SE (Avicii Arena)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="packageSelect" class="block text-sm font-medium text-gray-300 mb-1">Select M&G Package</label>
+                                    <select id="packageSelect" required onchange="updatePaymentDetails()" class="glass-input appearance-none">
+                                        <option value="" disabled selected>Choose a Package</option>
+                                        <!-- Options populated by JS -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="submitButton" class="w-full px-6 py-3 mt-4 bg-red-600 text-white font-bold text-xl rounded-lg hover:bg-red-500 transition duration-300 shadow-xl glass-interactive disabled:bg-gray-500 disabled:cursor-not-allowed">
+                                Confirm Booking & Generate Payment
+                            </button>
+                        </form>
+
+                        <!-- Payment Details/Gateway (Hidden until form submission) - Uses Glassmorphism container -->
+                        <div id="payment-gateway" class="mt-8 p-6 glass-container rounded-xl hidden shadow-2xl border-red-700">
+                            <h4 class="text-2xl font-bold text-yellow-400 mb-4">Finalize Payment via Bitcoin</h4>
+                            <p class="text-lg text-gray-200 mb-2">Your Booking ID: <span id="bookingId" class="font-mono text-red-300"></span></p>
+
+                            <!-- Price summary boxes use a slightly darker, but still glass-like background -->
+                            <div class="space-y-3 p-4 bg-red-900/30 rounded-lg border border-red-600 backdrop-blur-sm">
+                                <p class="text-sm font-semibold text-gray-300 uppercase">Total Due (USD)</p>
+                                <p id="usd-amount" class="text-3xl font-extrabold text-white">$0.00</p>
+                            </div>
+                            <div class="space-y-3 p-4 bg-red-900/30 mt-4 rounded-lg border border-red-600 backdrop-blur-sm">
+                                <p class="text-sm font-semibold text-gray-300 uppercase">Amount to Transfer (BTC)</p>
+                                <div class="flex items-center justify-between">
+                                    <p id="btc-amount" class="text-3xl font-extrabold text-yellow-400 font-mono">0.00000000 BTC</p>
+                                    <button onclick="copyToClipboard('btc-amount', this)" class="text-sm text-gray-300 bg-red-700 px-3 py-1 rounded-full hover:bg-red-600 transition duration-150 glass-interactive">Copy BTC</button>
+                                </div>
+                            </div>
+
+                            <div class="mt-6">
+                                <label for="btc-wallet" class="block text-sm font-medium text-gray-300 mb-1">Send Payment To This Bitcoin Address:</label>
+                                <div class="flex items-center space-x-2">
+                                    <!-- Wallet input uses glass-input style -->
+                                    <input type="text" id="btc-wallet" value="bc1q25k9n006gjex9lfkh60f5tt95e82sknjuegmfc" readonly class="flex-grow glass-input text-sm font-mono">
+                                    <button onclick="copyToClipboard('btc-wallet', this)" class="p-3 bg-red-700 rounded-lg hover:bg-red-600 transition duration-150 text-white glass-interactive">
+                                        <!-- Copy Icon SVG -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-400 mt-2">
+                                    <strong class="text-red-300">NOTE:</strong> This is the verified Bitcoin address for payment.
+                                </p>
+                            </div>
+
+                             <div id="message-box" class="mt-4 p-3 bg-red-800 rounded-lg text-sm hidden"></div>
+                        </div>
+
+                    </div>
+                </section>
+            </div>
+
+
+            <!-- ---------------------------------------------------------------------------------- -->
+            <!-- ADMIN DASHBOARD VIEW (Private): Displaying Bookings from Firestore -->
+            <!-- ---------------------------------------------------------------------------------- -->
+            <div id="dashboard-view" class="hidden">
+                <section class="glass-container rounded-xl p-6 md:p-10 shadow-xl min-h-[60vh]">
+                    <h3 class="text-3xl font-bold mb-6 border-b border-yellow-700 pb-3 text-yellow-400 flex justify-between items-center">
+                        <span id="dashboard-title">Loading Booking Dashboard...</span>
+                        <span id="admin-user-id" class="text-sm font-mono text-gray-500"></span>
+                    </h3>
+                    
+                    <!-- Booking Table Container -->
+                    <div id="bookings-table-container" class="mt-8 overflow-x-auto">
+                        <p id="dashboard-message" class="text-gray-400">Awaiting database connection...</p>
+                        <!-- Table will be injected here -->
+                    </div>
+                    
+                    <!-- Restricted Access Message (Visible if not admin) -->
+                    <div id="restricted-message" class="hidden text-center p-12">
+                        <svg class="mx-auto h-12 w-12 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <h4 class="mt-2 text-xl font-bold text-red-400">Access Restricted</h4>
+                        <p class="mt-1 text-gray-400">This area is for administrative access only.</p>
+                    </div>
+
+                </section>
+            </div>
+            
+             <!-- Custom Modal for Alerts/Confirms (Added for full robustness) -->
+             <div id="customModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center p-4 z-50">
+                <div class="glass-container rounded-xl shadow-xl max-w-sm w-full p-6 border-red-600 border">
+                    <h3 id="modalTitle" class="text-xl font-bold mb-4 text-red-400"></h3>
+                    <p id="modalBody" class="text-gray-300 mb-6"></p>
+                    <div class="flex justify-end space-x-3">
+                        <button id="modalCloseButton" onclick="closeModal()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition duration-150">Close</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ---------------------------------------------------------------------------------- -->
+    <!-- MINIMALIST FOOTER -->
+    <!-- ---------------------------------------------------------------------------------- -->
+    <footer class="bg-gray-900/95 py-6 mt-12 shadow-2xl border-t border-red-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
+            <!-- Copyright / Global Footnote -->
+            <div class="text-center text-gray-500 text-sm">
+                &copy; 2025 Luke Combs Official Tour. All Rights Reserved. | Powered by <span class="font-semibold text-gray-400">GoldenLine AGENCY</span> & <span class="font-semibold text-red-500">CelebHUB CONNECT</span>
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="module">
+        // --- Firebase Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        // *** CRITICAL CHANGE: Added signInWithEmailAndPassword for Admin login ***
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, addDoc, collection, setLogLevel, onSnapshot, query, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Firebase Configuration and Initialization ---
+        setLogLevel('Debug');
+
+        // *******************************************************************
+        // ******* ACTION REQUIRED: REPLACE THESE PLACEHOLDERS WITH YOUR REAL CONFIG KEYS *******
+        // *******************************************************************
+        // You get these values from Firebase Console -> Project Settings -> Web App Setup (Step 1).
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "YOUR_AUTH_DOMAIN_HERE",
+            projectId: "YOUR_PROJECT_ID_HERE",
+            storageBucket: "YOUR_STORAGE_BUCKET_HERE",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID_HERE",
+            appId: "YOUR_APP_ID_HERE"
+        };
+        // This is your Firebase Project ID.
+        const appId = "YOUR_PROJECT_ID_HERE"; 
+        // *******************************************************************
+        // *******************************************************************
+        
+        // This token is only used in the Canvas environment, so we set it to null for deployment.
+        const initialAuthToken = null;
+
+        let db = null;
+        let auth = null;
+        let userId = null;
+        let isAuthReady = false;
+        let isAdmin = false; // True if the user is authenticated via custom token (the implied admin)
+        let currentView = 'booking'; // Initial view
+
+        // --- MODAL UTILITIES ---
+        window.showModal = (title, body) => {
+            const modal = document.getElementById('customModal');
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').textContent = body;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        window.closeModal = () => {
+            const modal = document.getElementById('customModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        };
+        // -----------------------
+
+
+        /**
+         * GLOBAL FUNCTION: Switches between the booking and dashboard views.
+         * This must be defined globally for the inline onclick attributes to work.
+         * * @param {string} viewName - 'booking' or 'dashboard'.
+         */
+        window.switchView = function(viewName) {
+            currentView = viewName;
+            const bookingView = document.getElementById('booking-view');
+            const dashboardView = document.getElementById('dashboard-view');
+            const restrictedMessage = document.getElementById('restricted-message');
+            const bookingsTableContainer = document.getElementById('bookings-table-container');
+
+            // --- Ensure elements exist before manipulation (Defensive coding for the previous error) ---
+            if (!bookingView || !dashboardView || !restrictedMessage || !bookingsTableContainer) {
+                console.error("Critical view elements are missing from the DOM.");
+                return;
+            }
+
+            if (viewName === 'dashboard') {
+                bookingView.classList.add('hidden');
+                dashboardView.classList.remove('hidden');
+                
+                if (isAdmin) {
+                    restrictedMessage.classList.add('hidden');
+                    bookingsTableContainer.classList.remove('hidden');
+                    // Only attempt to load dashboard if Firebase auth is confirmed ready
+                    if (isAuthReady) {
+                        loadBookingsDashboard();
+                    } else {
+                        // This element was the source of the previous error. It should exist now.
+                        const dashboardMessage = document.getElementById('dashboard-message');
+                        if (dashboardMessage) { 
+                             dashboardMessage.textContent = "Connecting to the database. Please wait...";
+                        }
+                    }
+                } else {
+                    // Non-admin user attempts to view dashboard
+                    restrictedMessage.classList.remove('hidden');
+                    bookingsTableContainer.classList.add('hidden');
+                    const dashboardMessage = document.getElementById('dashboard-message');
+                    if (dashboardMessage) {
+                        dashboardMessage.textContent = "";
+                    }
+                    const dashboardTitle = document.getElementById('dashboard-title');
+                    if (dashboardTitle) {
+                        dashboardTitle.textContent = "Restricted Area";
+                    }
+                }
+            } else { // 'booking' view
+                dashboardView.classList.add('hidden');
+                bookingView.classList.remove('hidden');
+            }
+        }
+
+
+        async function initFirebase() {
+            try {
+                // Determine admin status based on whether a custom token was provided
+                isAdmin = !!initialAuthToken; 
+                
+                // Initialize app and services only if config is valid (check for a non-placeholder key)
+                if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE" || Object.keys(firebaseConfig).length === 0) {
+                     console.warn("Firebase config is using placeholders or is empty. Database features will not work until you replace the config.");
+                     isAuthReady = true;
+                     // Still call switchView to show the initial screen
+                     switchView(currentView); 
+                     return;
+                }
+                
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Set up authentication listener
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        // For deployment, we assume the admin signs in with their Email/Password
+                        // This checks if the user is the admin based on their email or specific ID, 
+                        // but for simplicity, we treat any authenticated user (non-anonymous) as admin in this simple app.
+                        // Since we only sign in anonymously or via admin credentials, we can assume non-anonymous means admin.
+                        isAdmin = !user.isAnonymous;
+
+                        console.log("Firebase Auth Ready. User ID:", userId, "Admin Status:", isAdmin);
+                        
+                        // If admin is active, show the dashboard button
+                        if (isAdmin) {
+                            const dashboardNavBtn = document.getElementById('dashboard-nav-btn');
+                            if (dashboardNavBtn) {
+                                dashboardNavBtn.classList.remove('hidden');
+                            }
+                        }
+
+                        // Once authenticated, load the dashboard data listener if we are on the dashboard view
+                        if (currentView === 'dashboard' && isAdmin) {
+                            loadBookingsDashboard();
+                        }
+                    } else {
+                        userId = null;
+                        isAdmin = false;
+                        console.log("Firebase Auth State: Signed out.");
+                    }
+                    isAuthReady = true;
+                    // Initial load: ensure correct view is shown and data is ready
+                    switchView(currentView); 
+                });
+
+                // *******************************************************************
+                // ******* PRODUCTION AUTHENTICATION LOGIC *******
+                // *******************************************************************
+                // We always attempt anonymous sign-in first for public access.
+                // The admin must sign in manually via the browser console (Step 8 in the Guide).
+                await signInAnonymously(auth);
+
+                console.log("Firebase initialized and authentication started. Signed in anonymously.");
+
+            } catch (error) {
+                console.error("Error initializing or authenticating Firebase:", error);
+                showModal("Connection Error", "Cannot connect to the Firebase database. Please check your configuration in the script.");
+                isAuthReady = true; // Still mark ready to proceed without listener
+                switchView(currentView);
+            }
+        }
+
+        // --- Dashboard Functionality ---
+
+        /**
+         * Renders the bookings data into the dashboard table.
+         * @param {Array<Object>} bookings - List of booking objects.
+         */
+        function renderBookingsTable(bookings) {
+            const container = document.getElementById('bookings-table-container');
+            const adminIdSpan = document.getElementById('admin-user-id');
+            const title = document.getElementById('dashboard-title');
+            
+            if (!container || !adminIdSpan || !title) return; // Null check for robustness
+
+            adminIdSpan.textContent = `Admin ID: ${userId || 'N/A'}`;
+            title.textContent = `All Bookings (${bookings.length})`;
+
+            if (bookings.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 p-4 border border-gray-700 rounded-lg text-center">No bookings have been made yet in this database path.</p>`;
+                return;
+            }
+
+            // Simple sorting by timestamp (newest first)
+            bookings.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+            let tableHTML = `
+                <table class="min-w-full bg-gray-800/80 rounded-lg overflow-hidden shadow-xl text-sm">
+                    <thead>
+                        <tr class="bg-red-700/80 text-left text-white uppercase tracking-wider">
+                            <th class="py-3 px-4 font-semibold">ID</th>
+                            <th class="py-3 px-4 font-semibold">Date</th>
+                            <th class="py-3 px-4 font-semibold">Customer</th>
+                            <th class="py-3 px-4 font-semibold hidden sm:table-cell">Email</th>
+                            <th class="py-3 px-4 font-semibold">Package</th>
+                            <th class="py-3 px-4 font-semibold hidden md:table-cell">Price (BTC)</th>
+                            <th class="py-3 px-4 font-semibold text-center">Status / Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            bookings.forEach((booking, index) => {
+                const rowClass = index % 2 === 0 ? 'bg-gray-700/50' : 'bg-gray-800/50';
+                const isPaid = booking.paymentStatus === 'PAID';
+                const statusColor = isPaid ? 'text-green-400' : 'text-red-400';
+                const rawTimestamp = booking.timestamp?.seconds ? booking.timestamp.seconds * 1000 : Date.now();
+                const formattedDate = new Date(rawTimestamp).toLocaleString();
+                
+                const actionButton = isPaid 
+                    ? `<span class="text-green-400 font-bold">PAID</span>`
+                    : `<button onclick="updateBookingStatus('${booking.docId}', 'PAID', this)" class="bg-yellow-500 text-gray-900 px-3 py-1 text-xs rounded-full hover:bg-yellow-400 transition duration-150 glass-interactive">Mark Paid</button>`;
+
+                tableHTML += `
+                    <tr class="${rowClass} border-b border-gray-700 hover:bg-red-900/10">
+                        <td class="py-3 px-4 font-mono text-xs">${booking.bookingId}</td>
+                        <td class="py-3 px-4">${formattedDate.split(',')[0]}</td>
+                        <td class="py-3 px-4">${booking.fullName}</td>
+                        <td class="py-3 px-4 hidden sm:table-cell text-xs">${booking.email}</td>
+                        <td class="py-3 px-4 text-red-300">${booking.packageName}</td>
+                        <td class="py-3 px-4 hidden md:table-cell text-yellow-400 font-mono">${booking.priceBTC}</td>
+                        <td class="py-3 px-4 font-semibold text-center ${statusColor}">
+                            ${actionButton}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `</tbody></table>`;
+            container.innerHTML = tableHTML;
+        }
+
+
+        /**
+         * Sets up the real-time listener for the dashboard data.
+         */
+        function loadBookingsDashboard() {
+            // NOTE: We rely on the security rules and the isAdmin flag from the onAuthStateChanged listener.
+            if (!isAuthReady || !db || !userId || !isAdmin) {
+                const dashboardMessage = document.getElementById('dashboard-message');
+                if(dashboardMessage) dashboardMessage.textContent = "Authentication and Admin check failed. Please sign in as an admin.";
+                return;
+            }
+
+            // Path to the admin's private booking data - secured by userId
+            const collectionPath = `artifacts/${appId}/users/${userId}/bookings`;
+            const bookingsQuery = query(collection(db, collectionPath));
+            const message = document.getElementById('dashboard-message');
+            
+            if (message) message.textContent = "Listening for real-time updates...";
+
+            // Set up real-time listener
+            const unsubscribe = onSnapshot(bookingsQuery, (snapshot) => {
+                const bookings = [];
+                snapshot.forEach(doc => {
+                    bookings.push({ ...doc.data(), docId: doc.id });
+                });
+                
+                renderBookingsTable(bookings);
+                if (message) message.textContent = ""; // Clear the message after loading
+            }, (error) => {
+                console.error("Error fetching bookings:", error);
+                const title = document.getElementById('dashboard-title');
+                const container = document.getElementById('bookings-table-container');
+                if (title) title.textContent = "Dashboard Error";
+                if (container) container.innerHTML = `<p class="text-red-500 p-4 border border-red-800 rounded-lg">Failed to load bookings: ${error.message}. Check your security rules.</p>`;
+            });
+        }
+
+        /**
+         * Updates the payment status of a booking document in Firestore.
+         */
+        window.updateBookingStatus = async function(docId, newStatus, button) {
+            if (!isAuthReady || !db || !userId || !isAdmin) {
+                console.error("Database not ready or user is not admin for update.");
+                showModal("Access Denied", "Only the administrator can update booking status. Please ensure you are logged in.");
+                return;
+            }
+
+            const collectionPath = `artifacts/${appId}/users/${userId}/bookings`;
+            const bookingRef = doc(db, collectionPath, docId);
+
+            const originalText = button.textContent;
+            button.textContent = 'Updating...';
+            button.disabled = true;
+
+            try {
+                await updateDoc(bookingRef, {
+                    paymentStatus: newStatus,
+                    paymentConfirmationDate: {
+                        seconds: Math.floor(Date.now() / 1000), 
+                        nanoseconds: 0 
+                    }
+                });
+            } catch (error) {
+                console.error("Error updating booking status:", error);
+                showModal("Update Failed", `Error updating status for ${docId}: ${error.message}`);
+                button.textContent = originalText;
+                button.disabled = false;
+            }
+        }
+
+
+        // --- Configuration and Data (Remains the same) ---
+        const BTC_RATE = 90955.81; 
+        const PACKAGES = [
+            { name: "Bootlegger Basic", price: 1475.75, description: "Standard meet, photo op, and signed item." },
+            { name: "Kinda Saturday VIP", price: 2950.75, description: "Early entry, premium seating, extended meet time, and exclusive gift." },
+            { name: "Ultimate Headliner Experience", price: 5900.75, description: "Backstage tour, private acoustic song, all access pass, and VIP swag." }
+        ];
+        const BTC_WALLET_ADDRESS = "bc1q25k9n006gjex9lfkh60f5tt95e82sknjuegmfc";
+
+        // --- Utility Functions (Remains the same) ---
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+        }
+
+        function usdToBtc(usdAmount) {
+            if (usdAmount <= 0) return 0;
+            return (usdAmount / BTC_RATE).toFixed(8);
+        }
+
+        function displayMessage(message, isError = false) {
+            const box = document.getElementById('message-box');
+            if (!box) return;
+            box.textContent = message;
+            box.className = `mt-4 p-3 rounded-lg text-sm ${isError ? 'bg-red-800 text-red-200' : 'bg-green-800 text-green-200'}`;
+            box.classList.remove('hidden');
+            setTimeout(() => box.classList.add('hidden'), 5000);
+        }
+
+        /**
+         * GLOBAL FUNCTION: Copies text content or input value to the clipboard.
+         */
+        window.copyToClipboard = function(elementId, button) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            let textToCopy;
+
+            if (element.tagName === 'INPUT') {
+                textToCopy = element.value;
+                element.select();
+            } else {
+                textToCopy = element.textContent;
+                const tempInput = document.createElement('textarea');
+                tempInput.value = textToCopy;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+            }
+
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        }
+
+
+        // --- UI Initialization (Remains the same) ---
+        function initializeUI() {
+            const packageSelect = document.getElementById('packageSelect');
+            const pricingList = document.getElementById('pricing-list');
+            if (!packageSelect || !pricingList) return;
+
+            // Populate the dropdown menu
+            PACKAGES.forEach((pkg, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${pkg.name} (${formatCurrency(pkg.price)})`;
+                packageSelect.appendChild(option);
+            });
+
+            // Populate the pricing card list
+            pricingList.innerHTML = PACKAGES.map((pkg) => `
+                <div class="p-4 glass-container glass-interactive rounded-lg border-l-4 border-red-600 shadow-md hover:bg-red-900/10">
+                    <h4 class="text-xl font-bold text-red-400 mb-1">${pkg.name}</h4>
+                    <p class="text-2xl font-extrabold text-white">${pkg.price > 0 ? formatCurrency(pkg.price) : 'FREE'} </p>
+                    <p class="text-sm text-gray-400 mt-2">${pkg.description}</p>
+                </div>
+            `).join('');
+
+            // Initial state of the submit button
+            const submitButton = document.getElementById('submitButton');
+            if (submitButton) submitButton.disabled = true;
+        }
+
+        // --- Core Logic (Function must be global for inline event handlers) ---
+
+        /**
+         * GLOBAL FUNCTION: Updates the submit button state based on package selection.
+         */
+        window.updatePaymentDetails = function() { // Made globally accessible
+            const packageSelect = document.getElementById('packageSelect');
+            const submitButton = document.getElementById('submitButton');
+            if (!packageSelect || !submitButton) return;
+
+            const selectedIndex = packageSelect.value;
+
+            if (selectedIndex === "") {
+                // If nothing is selected, clear and hide payment info
+                const usdAmount = document.getElementById('usd-amount');
+                const btcAmount = document.getElementById('btc-amount');
+                const paymentGateway = document.getElementById('payment-gateway');
+                if (usdAmount) usdAmount.textContent = formatCurrency(0);
+                if (btcAmount) btcAmount.textContent = '0.00000000 BTC';
+                if (paymentGateway) paymentGateway.classList.add('hidden');
+                submitButton.disabled = true;
+                return;
+            }
+
+            // Enable button if a package is selected
+            submitButton.disabled = false;
+        }
+
+        const packageSelect = document.getElementById('packageSelect');
+        const eventDate = document.getElementById('eventDate');
+
+        // These listeners are redundant now since we are using inline onchange, but we keep them as a fallback for robustness.
+        if (packageSelect) packageSelect.addEventListener('change', window.updatePaymentDetails);
+        if (eventDate) eventDate.addEventListener('change', window.updatePaymentDetails);
+
+        const bookingForm = document.getElementById('bookingForm');
+
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                if (!isAuthReady || !userId || !db) {
+                    showModal("Connection Error", "Database is not ready. Please wait a moment and try again.");
+                    return;
+                }
+
+                const submitButton = document.getElementById('submitButton');
+                if (!submitButton) return;
+
+                submitButton.disabled = true;
+                submitButton.textContent = 'Processing...';
+
+                const packageSelect = document.getElementById('packageSelect');
+                const selectedIndex = parseInt(packageSelect.value);
+                const selectedPackage = PACKAGES[selectedIndex];
+
+                const eventDate = document.getElementById('eventDate').value;
+                const fullName = document.getElementById('fullName').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                
+                if (selectedIndex === "" || eventDate === "") {
+                    displayMessage("Please select both an event date and a package.", true);
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Confirm Booking & Generate Payment';
+                    return;
+                }
+
+                const usdAmount = selectedPackage.price;
+                const btcAmount = usdToBtc(usdAmount);
+                const bookingId = `LCMC26-${crypto.randomUUID().substring(0, 8).toUpperCase()}`; 
+
+                const bookingData = {
+                    bookingId: bookingId,
+                    timestamp: {
+                        seconds: Math.floor(Date.now() / 1000), 
+                        nanoseconds: 0 
+                    },
+                    userId: userId,
+                    fullName: fullName,
+                    email: email,
+                    phone: phone,
+                    eventDate: eventDate,
+                    packageName: selectedPackage.name,
+                    priceUSD: usdAmount,
+                    priceBTC: btcAmount,
+                    paymentStatus: 'AWAITING_PAYMENT'
+                };
+
+                try {
+                    const collectionPath = `artifacts/${appId}/users/${userId}/bookings`;
+                    await addDoc(collection(db, collectionPath), bookingData);
+
+                    // Update Payment Gateway details (Frontend UI)
+                    document.getElementById('bookingId').textContent = bookingId;
+                    document.getElementById('usd-amount').textContent = formatCurrency(usdAmount);
+                    document.getElementById('btc-amount').textContent = `${btcAmount} BTC`;
+                    document.getElementById('btc-wallet').value = BTC_WALLET_ADDRESS;
+                    document.getElementById('payment-gateway').classList.remove('hidden');
+
+                    displayMessage(`Booking ID ${bookingId} saved! Please complete your Bitcoin transfer.`, false);
+
+                    // Scroll to the payment section
+                    document.getElementById('payment-gateway').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                } catch (error) {
+                    console.error("Error saving booking to Firestore:", error);
+                    showModal("Saving Error", `Error saving booking: ${error.message}`);
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Confirm Booking & Generate Payment';
+                }
+            });
+        }
+
+
+        // Initialize Firebase and UI on load
+        window.addEventListener('load', () => {
+            initFirebase();
+            initializeUI();
+        });
+    </script>
+
+</body>
+</html>
